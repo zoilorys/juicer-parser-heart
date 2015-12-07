@@ -42,7 +42,6 @@ $(function() {
 			count = Math.ceil(items.length*dimensions[rows][i]);
 			data[i] = items.slice(itemsUsed, itemsUsed + count);
 			itemsUsed = itemsUsed + count;
-			console.log(count, itemsUsed);
 		}
 
 		var dummy = $('<div>', {
@@ -66,8 +65,8 @@ $(function() {
 			return rowContainer.append.apply(rowContainer, parsedItems[row]);
 		});
 
-		root.fadeOut(200, function() {
-			root.empty().append.apply(root, wrapped).fadeIn(200);
+		root.fadeOut(400, function() {
+			root.empty().append.apply(root, wrapped).fadeIn(600);
 		});
 	}
 
@@ -89,9 +88,7 @@ $(function() {
 			dataType: 'jsonp'
 		}).done(function(data) {
 			callback(null, data);
-		}).fail(function(error) {
-			callback(error);
-		});
+		}).fail(callback);
 	}
 
 	function juicerSearch(callback) {
@@ -106,7 +103,6 @@ $(function() {
 			if (error) {
 				console.log('Error: ', error);
 			} else {
-				console.log(data.posts.items.length);
 				displayItems(
 					parseItems(data.posts.items)
 				);
