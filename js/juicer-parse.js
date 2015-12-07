@@ -1,14 +1,15 @@
 $(function() {
 	var dimensions = {
-		'8': {
-			'1': 0.08,
+		'9': {
+			'1': 0.09,
 			'2': 0.12,
 			'3': 0.14,
 			'4': 0.16,
 			'5': 0.14,
-			'6': 0.11,
-			'7': 0.07,
-			'8': 0.02
+			'6': 0.12,
+			'7': 0.09,
+			'8': 0.06,
+			'9': 0.02
 		}
 	}
 
@@ -34,20 +35,21 @@ $(function() {
 	function distributeItems(items) {
 		var data = {},
 				itemsUsed = 0,
-				rows = 8,
+				rows = 9,
 				count = 0;
 
 		for (var i = 1; i <= rows; i++) {
 			count = Math.ceil(items.length*dimensions[rows][i]);
 			data[i] = items.slice(itemsUsed, itemsUsed + count);
 			itemsUsed = itemsUsed + count;
+			console.log(count, itemsUsed);
 		}
 
 		var dummy = $('<div>', {
 			'class': 'heart-item',
 		})[0];
 
-		data[1].splice(Math.ceil(data[1].length/2), 0, $.clone(dummy), $.clone(dummy), $.clone(dummy));
+		data[1].splice(Math.ceil(data[1].length/2), 0, $.clone(dummy), $.clone(dummy));
 		data[2].splice(Math.ceil(data[2].length/2), 0, $.clone(dummy));
 
 		return data;
