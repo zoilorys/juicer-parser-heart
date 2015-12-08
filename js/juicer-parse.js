@@ -19,7 +19,8 @@ $(function() {
 			}),
 
 			link = $('<a>', {
-				href: item.external
+				href: item.external,
+				target: '_blank'
 			}),
 
 			img = $('<img>', {
