@@ -118,9 +118,20 @@ $(function() {
 		})
 	}
 
+	function initSearchOnEnter() {
+		$('#juicer-search-input').on('keyup', function(e) {
+			e.preventDefault();
+
+			if(e.which === 13) {
+				basicSearch();
+			}
+		})
+	}
+
 	function init() {
 		basicSearch();
 		initSearchButton();
+		initSearchOnEnter();
 	}
 
 	init();
