@@ -11,7 +11,12 @@ $(function() {
 			'8': 0.06,
 			'9': 0.02
 		}
-	}
+	},
+		states = [
+			'row',
+			'heart'
+		],
+		currentState = 1;
 
 	function buildItem(item) {
 		var container = $('<div>', {
@@ -55,7 +60,21 @@ $(function() {
 		return data;
 	}
 
-	function displayItems(parsedItems) {
+	function buildRow(parsedItems) {
+		console.log(parsedItems);
+		var root = $('#juicer-heart'),
+				row = $('<div>', {
+					'class': 'heart-row'
+				});
+
+		root.fadeOut(400, function() {
+			root.empty().append.apply(root,
+				row.append.apply(row, parsedItems)
+			).fadeIn(600);
+		});
+	}
+
+	function buildHeart(parsedItems) {
 		var root = $('#juicer-heart'),
 				container = $('<div>');
 
@@ -71,10 +90,23 @@ $(function() {
 		});
 	}
 
+	function displayItems(parsedItems) {
+		switch(currentState) {
+			case 0:
+				buildRow(parsedItems);
+				break;
+			case 1:
+				buildHeart(
+					distributeItems(parsedItems)
+				);
+				break;
+			default:
+				throw new Error('Unknown application state: ' + currentState);
+		}
+	}
+
 	function parseItems(items) {
-		return distributeItems(
-			items.map(buildItem)
-		);
+		return items.map(buildItem);
 	}
 
 	function loadJuicerItems(tag, callback) {
@@ -111,12 +143,39 @@ $(function() {
 		});
 	}
 
+	function setState(state) {
+		if (currentState === state) {
+			return;
+		} else if (typeof state !== 'number') {
+			throw new Error('State must be type "Number", instead got ' + typeof state);
+		} else if (!states[state]) {
+			throw new Error('Unable to set state "' + states[state] +'" state: No state with index ' + state + ' found!');
+		} else {
+			currentState = state;
+			basicSearch();
+		}
+	}
+
 	function initSearchButton() {
 		$('#juicer-search-button').on('click', function(e) {
 			e.preventDefault();
 
 			basicSearch();
 		})
+	}
+
+	function initSwitchButtons() {
+		$('#juicer-heart-button').on('click', function(e) {
+			e.preventDefault();
+
+			setState(1);
+		});
+
+		$('#juicer-row-button').on('click', function(e) {
+			e.preventDefault();
+
+			setState(0);
+		});
 	}
 
 	function initSearchOnEnter() {
@@ -129,10 +188,15 @@ $(function() {
 		})
 	}
 
-	function init() {
-		basicSearch();
+	function initInputs() {
 		initSearchButton();
 		initSearchOnEnter();
+		initSwitchButtons();
+	}
+
+	function init() {
+		basicSearch();
+		initInputs();
 	}
 
 	init();
