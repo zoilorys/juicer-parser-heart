@@ -60,40 +60,39 @@ $(function() {
 		return data;
 	}
 
-	function buildRow(parsedItems) {
-		console.log(parsedItems);
-		var root = $('#juicer-heart'),
-				row = $('<div>', {
-					'class': 'heart-row'
-				});
+	function appendToRoot(data) {
+		var root = $('#juicer-heart');
 
 		root.fadeOut(400, function() {
-			root.empty().append.apply(root,
-				row.append.apply(row, parsedItems)
-			).fadeIn(600);
+			root.empty().append.apply(root, data).fadeIn(600);
 		});
 	}
 
-	function buildHeart(parsedItems) {
-		var root = $('#juicer-heart'),
-				container = $('<div>');
-
-		var wrapped = Object.keys(parsedItems).map(function(row) {
-			var rowContainer = $('<div>', {
+	function wrapInRow(data) {
+		var rowContainer = $('<div>', {
 					'class': 'heart-row'
 			});
-			return rowContainer.append.apply(rowContainer, parsedItems[row]);
+		return rowContainer.append.apply(rowContainer, data);
+	}
+
+	function buildRow(row) {
+		appendToRoot(row);
+	}
+
+	function buildHeart(parsedItems) {
+		var wrapped = Object.keys(parsedItems).map(function(row) {
+			return wrapInRow(parsedItems[row]);
 		});
 
-		root.fadeOut(400, function() {
-			root.empty().append.apply(root, wrapped).fadeIn(600);
-		});
+		appendToRoot(wrapped);
 	}
 
 	function displayItems(parsedItems) {
 		switch(currentState) {
 			case 0:
-				buildRow(parsedItems);
+				buildRow(
+					wrapInRow(parsedItems)
+				);
 				break;
 			case 1:
 				buildHeart(
