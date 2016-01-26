@@ -18,13 +18,170 @@ $(function() {
 		],
 		currentState = 1;
 
+	function generateModal(item) {
+		var overlay = $('<div>', {
+			'class': 'modal fade modal-heart in',
+			id: 'modalHeart',
+			tabindex: "-1",
+			role: 'dialog',
+			'aria-labelledby': 'myModalLabel',
+			style: "display: block; padding-left: 17px;"
+		});
+
+		var doc = $('<div>', {
+			'class': 'modal-dialog',
+			role: 'document'
+		}).on('click', function(e) {e.stopPropagation();});
+
+		var contentWrapper = $('<div>', {
+			'class': 'modal-content'
+		});
+
+		var modalHeader = $('<div>', {
+			'class': 'modal-header'
+		}).append(
+			$('<button>', {
+				type: 'button',
+				'class': 'close',
+				'data-dismiss': 'modal',
+				'aria-label': 'Close'
+			}).append(
+				$('<span>', {
+					'aria-hidden': 'true',
+					text: 'x'
+				})
+			).on('click', function(e) {
+				e.stopPropagation();
+				closeModal();
+			})
+		);
+
+		var modalBody = $('<div>', {
+			'class': 'modal-body'
+		});
+
+		var row = $('<div>', {
+			'class': 'row'
+		});
+
+		var postImg = $('<div>', {
+			'class': 'col-xs-6 img-post'
+		}).append(
+			$('<img>', {
+				src: item.image,
+				alt: ''
+			})
+		);
+
+		var postInfo = $('<div>', {
+			'class': 'col-xs-6 info-post'
+		});
+
+		var topInfoPost = $('<div>', {
+			'class': 'top-info-post col-xs-12'
+		});
+
+		var userAcc = $('<div>', {
+			'class': 'user-acc pull-left'
+		}).append(
+			$('<img>', {
+				src: item.poster_image,
+				alt: ''
+			}),
+			$('<span>', {
+				text: item.poster_name
+			})
+		);
+
+		var timePosted = new Date(item.external_created_at).getTime();
+		var currentTime = new Date().getTime();
+		var time = (currentTime - timePosted) / (1000 * 3600);
+
+		if (time < 1) {
+			var postedTime = Math.floor(time * 60) + "min ago";
+		} else {
+			var postedTime = time.toFixed(2) + "h ago";
+		}
+
+		var postTime = $('<div>', {
+			'class': 'time-post pull-right',
+			text: postedTime
+		});
+
+		var middleInfoPost = $('<div>', {
+			'class': 'middle-info-post col-xs-12',
+			text: item.unformatted_message
+		});
+
+		var bottomInfoPost = $('<div>', {
+			'class': 'bottom-info-post col-xs-12'
+		});
+
+		var goToButton = $('<div>', {
+			'class': 'button pull-left'
+		}).append(
+			$('<button>', {
+				type: 'button',
+				'class': 'btn-default',
+				text: 'View on ' + item.source.source
+			})
+		);
+
+		var likesComments = $('<div>', {
+			'class': 'like-comments pull-left',
+			html: '<i class="like-icon"></i>' + item.likes + '<i class="comment-icon"></i>' + item.comments
+		});
+
+		var socials = $('<div>', {
+			'class': 'social-share pull-right',
+			text: 'socials'
+		});
+
+		overlay.append(
+			doc.append(
+				contentWrapper.append(
+					modalHeader,
+					modalBody.append(
+						row.clone().append(
+							postImg,
+							postInfo.append(
+								row.clone().append(
+									topInfoPost.append(
+										userAcc,
+										postTime
+									),
+									middleInfoPost,
+									bottomInfoPost.append(
+										goToButton,
+										likesComments,
+										socials
+									)
+								)
+							)
+						)
+					)
+				)
+			)
+		);
+
+		function closeModal() {
+			$('#modalHeart').remove();
+		}
+
+		overlay.on('click', function(e) {
+			e.stopPropagation();
+			closeModal();
+		})
+
+		$('body').append(overlay);
+	}
+
 	function buildItem(item) {
 		var container = $('<div>', {
 				'class': 'heart-item',
 			}),
 
 			link = $('<a>', {
-				href: item.external,
 				target: '_blank'
 			}),
 
@@ -32,6 +189,12 @@ $(function() {
 				src: item.image,
 				alt: item.message
 			});
+
+		container.on('click', function(e) {
+			e.stopPropagation();
+
+			generateModal(item);
+		})
 
 		return container.append(
 			link.append(img)

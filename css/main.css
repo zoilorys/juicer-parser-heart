@@ -69,3 +69,34 @@ body {
 	height: 100px;
 }
 
+.juicer-modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100vh;
+	width: 100vw;
+	background: rgba(50,50,50,0.3);
+	z-index: 999;
+}
+
+.juicer-modal {
+	position: relative;
+	width: 70%;
+	top: 100px;
+	background: white;
+	left: 15%;
+}
+
+.juicer-modal img {
+}
+
+.juicer-modal-ib {
+	display: inline-block;
+	width: 50%;
+	vertical-align: top;
+}
+
+
+.modal-heart .modal-body .img-post img{
+    max-width: 100%;
+}
