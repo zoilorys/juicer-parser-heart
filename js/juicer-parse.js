@@ -1,4 +1,9 @@
 $(function() {
+	var hash = {
+		"Instagram": "http://instagram.com/p/",
+		"Twitter": ""
+	}
+
 	var dimensions = {
 		'9': {
 			'1': 0.09,
@@ -18,7 +23,29 @@ $(function() {
 		],
 		currentState = 1;
 
+	function encodeRFC5987ValueChars (str) {
+		return encodeURIComponent(str)
+			.replace(/['()]/g, escape)
+			.replace(/\*/g, '%2A')
+			.replace(/%(?:7C|60|5E)/g, unescape);
+	}
+
+	function createSocialButton(options) {
+		return $('<li>', {
+			'class': 'social-button social-' + options.tag
+		}).append(
+			$('<a>', {
+				'class': 'social-link',
+				target: '_blank',
+				href: options.url,
+				html: '<i class="' + options.icon + '"></i>'
+			})
+		);
+	}
+
 	function generateModal(item) {
+		var link = item.full_url;
+
 		var overlay = $('<div>', {
 			'class': 'modal fade modal-heart in',
 			id: 'modalHeart',
@@ -123,19 +150,50 @@ $(function() {
 			$('<button>', {
 				type: 'button',
 				'class': 'btn-default',
-				text: 'View on ' + item.source.source
+				html: '<a href="' + link + '">View on ' + item.source.source + '</a>'
 			})
 		);
 
 		var likesComments = $('<div>', {
 			'class': 'like-comments pull-left',
-			html: '<i class="like-icon"></i>' + item.likes + '<i class="comment-icon"></i>' + item.comments
+			html: '<a href="' + link + '"><i class="fa fa-thumbs-o-up"></i>' + item.likes + '</a>' +
+				'<a href="' + link + '"><i class="fa fa-comment"></i>' + item.comments + '</a>'
 		});
 
 		var socials = $('<div>', {
 			'class': 'social-share pull-right',
-			text: 'socials'
-		});
+		}).append(
+			$('<ul>', {
+				'class': 'social-share-buttons'
+			}).append(
+				createSocialButton({
+					tag: 'facebook',
+					icon: 'fa fa-facebook',
+					url: 'http://www.facebook.com/sharer/sharer.php?u=' + item.full_url
+				}),
+				createSocialButton({
+					tag: 'twitter',
+					icon: 'fa fa-twitter',
+					url: 'https://twitter.com/intent/tweet?text=' + encodeRFC5987ValueChars(item.unformatted_message)
+				}),
+				createSocialButton({
+					tag: 'google-plus',
+					icon: 'fa fa-google-plus',
+					url: "https://plus.google.com/share?url=" + item.full_url
+				}),
+				createSocialButton({
+					tag: 'pinterest',
+					icon: 'fa fa-pinterest',
+					url: 'https://pinterest.com/pin/create/button/?url=' + item.full_url + '&media=' + encodeRFC5987ValueChars(item.image) +
+						+ '&description=' + encodeRFC5987ValueChars(item.unformatted_message)
+				}),
+				createSocialButton({
+					tag: 'linkedin',
+					icon: 'fa fa-linkedin',
+					url: 'https://www.linkedin.com/shareArticle?url=' + item.full_url + '&title=' + encodeRFC5987ValueChars(item.unformatted_message)
+				})
+			)
+		);
 
 		overlay.append(
 			doc.append(
