@@ -46,6 +46,8 @@ $(function() {
 	function generateModal(item) {
 		var link = item.full_url;
 
+		item.unformatted_message = item.unformatted_message.replace(/<.*>/gi, "");
+
 		var overlay = $('<div>', {
 			'class': 'modal fade modal-heart in',
 			id: 'modalHeart',
@@ -169,7 +171,7 @@ $(function() {
 				createSocialButton({
 					tag: 'facebook',
 					icon: 'fa fa-facebook',
-					url: 'http://www.facebook.com/sharer/sharer.php?u=' + item.full_url
+					url: 'http://www.facebook.com/sharer/sharer.php?u=' + link
 				}),
 				createSocialButton({
 					tag: 'twitter',
@@ -179,7 +181,7 @@ $(function() {
 				createSocialButton({
 					tag: 'google-plus',
 					icon: 'fa fa-google-plus',
-					url: "https://plus.google.com/share?url=" + item.full_url
+					url: "https://plus.google.com/share?url=" + link
 				}),
 				createSocialButton({
 					tag: 'pinterest',
@@ -190,7 +192,7 @@ $(function() {
 				createSocialButton({
 					tag: 'linkedin',
 					icon: 'fa fa-linkedin',
-					url: 'https://www.linkedin.com/shareArticle?url=' + item.full_url + '&title=' + encodeRFC5987ValueChars(item.unformatted_message)
+					url: 'https://www.linkedin.com/shareArticle?url=' + link + '&title=' + encodeRFC5987ValueChars(item.unformatted_message)
 				})
 			)
 		);
